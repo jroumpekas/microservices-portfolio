@@ -1,0 +1,36 @@
+services:
+  ai-service:
+    build: ./lending-library-ai
+    container_name: lending-library-ai
+    ports:
+      - "8000:8000"
+    networks:
+      - library-net
+
+  backend:
+    build:
+      context: ./library-app/library-app
+      dockerfile: Dockerfile
+    container_name: lending-library-app
+    ports:
+      - "8080:8080"
+    environment:
+      AI_SERVICE_URL: http://ai-service:8000
+    depends_on:
+      - ai-service
+    networks:
+      - library-net
+
+  frontend:
+    build: C:\Users\jimro\WebstormProjects\lending-library-2
+    container_name: lending-library-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - library-net
+
+networks:
+  library-net:
+    driver: bridge
